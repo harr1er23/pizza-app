@@ -1,10 +1,97 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
+import boundaries from "eslint-plugin-boundaries";
 import nextTs from "eslint-config-next/typescript";
+import prettierConfig from "eslint-config-prettier/flat";
 
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  {
+    plugins: { boundaries },
+    settings: {
+      "boundaries/elements": [
+        { type: "app", pattern: "src/app/**" },
+        { type: "views", pattern: "src/views/**" },
+        { type: "widgets", pattern: "src/widgets/**" },
+        { type: "features", pattern: "src/features/**" },
+        { type: "entities", pattern: "src/entities/**" },
+        { type: "shared", pattern: "src/shared/**" },
+      ],
+      "import/resolver": {
+        typescript: {
+          project: "./tsconfig.json",
+        },
+      },
+    },
+    rules: {
+      "boundaries/dependencies": [
+        "error",
+        {
+          default: "disallow",
+          policies: [
+            {
+              from: { element: { type: "app" } },
+              allow: {
+                to: {
+                  element: {
+                    type: [
+                      "app",
+                      "views",
+                      "widgets",
+                      "features",
+                      "entities",
+                      "shared",
+                    ],
+                  },
+                },
+              },
+            },
+            {
+              from: { element: { type: "views" } },
+              allow: {
+                to: {
+                  element: {
+                    type: [
+                      "views",
+                      "widgets",
+                      "features",
+                      "entities",
+                      "shared",
+                    ],
+                  },
+                },
+              },
+            },
+            {
+              from: { element: { type: "widgets" } },
+              allow: {
+                to: {
+                  element: {
+                    type: ["widgets", "features", "entities", "shared"],
+                  },
+                },
+              },
+            },
+            {
+              from: { element: { type: "features" } },
+              allow: {
+                to: { element: { type: ["features", "entities", "shared"] } },
+              },
+            },
+            {
+              from: { element: { type: "entities" } },
+              allow: { to: { element: { type: ["entities", "shared"] } } },
+            },
+            {
+              from: { element: { type: "shared" } },
+              allow: { to: { element: { type: ["shared"] } } },
+            },
+          ],
+        },
+      ],
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
@@ -13,6 +100,7 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  prettierConfig,
 ]);
 
 export default eslintConfig;
