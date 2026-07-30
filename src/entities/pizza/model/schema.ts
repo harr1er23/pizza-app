@@ -86,3 +86,4 @@ export type PizzaProduct = z.infer<typeof pizzaProductSchema>;
 export type GetPizzaCatalogResponse = z.infer<
   typeof getPizzaCatalogResponseSchema
 >;
+export type PizzaSize = z.infer<typeof pizzaSizeSchema>;
