@@ -46,3 +46,7 @@ next-env.d.ts
 CLAUDE.md
 skills-lock.json
 AGENTS.md
+
+# playwright
+/test-results/
+/playwright-report/
