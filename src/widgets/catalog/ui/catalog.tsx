@@ -1,17 +1,12 @@
 "use client";
 
-import { usePizzaCatalog } from "@entities/pizza";
+import {
+  pizzaCategories,
+  pizzaCategoryLabels,
+  usePizzaCatalog,
+} from "@entities/pizza";
 import { PizzaCard } from "@entities/pizza";
-import type { PizzaCategory } from "@entities/pizza";
-
-const categoryLabels: Record<PizzaCategory, string> = {
-  pizza: "Пиццы",
-  breakfast: "Завтраки",
-  wings: "Крылышки",
-  milkshake: "Милкшейки",
-};
-
-const categories = Object.keys(categoryLabels) as PizzaCategory[];
+import { CategoryFilter } from "@features/filter-pizzas-by-category";
 
 export function Catalog() {
   const { data, isPending, isError, error } = usePizzaCatalog();
@@ -26,7 +21,9 @@ export function Catalog() {
 
   return (
     <div className="flex flex-col gap-10">
-      {categories.map((category) => {
+      <CategoryFilter />
+
+      {pizzaCategories.map((category) => {
         const products = data.catalog.filter(
           (product) => product.category === category,
         );
@@ -36,9 +33,9 @@ export function Catalog() {
         }
 
         return (
-          <section key={category}>
+          <section key={category} id={`category-${category}`}>
             <h2 className="mb-4 text-2xl font-bold">
-              {categoryLabels[category]}
+              {pizzaCategoryLabels[category]}
             </h2>
             <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
               {products.map((product) => (
